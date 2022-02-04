@@ -1,0 +1,84 @@
+params {
+    publish_mode = "symlink"
+
+	human_ref = "/scratch/schudoma/cazy/hg38/GCA_000001405.28_GRCh38.p13"
+	reference = "/scratch/schudoma/ngless/data/Modules/igc.ngm/0.0/data/IGC-bwa-0.7.17.fna"
+}
+
+/* section below needs to be adjusted to local cluster */
+executor {
+    $slurm {
+        queueSize = 10
+    }
+    $local {
+        cpus = 1
+        memory = '4 GB'
+    }
+}
+
+process {
+    withName: qc_preprocess {
+        executor = "slurm"
+        errorStrategy = {task.attempt <= 3 ? "retry" : "ignore"}
+        cpus = 4
+        memory = {8.GB * task.attempt}
+        time = '2h'
+        maxRetries = 3
+    }
+    withName: qc_preprocess_singles {
+        executor = "slurm"
+        errorStrategy = {task.attempt <= 3 ? "retry" : "ignore"}
+        cpus = 4
+        memory = {8.GB * task.attempt}
+        time = '2h'
+        maxRetries = 3
+    }
+	withName: merge_singles {
+		executor = "slurm"
+		errorStrategy = {task.attempt <= 3 ? "retry" : "ignore"}
+		cpus = 1
+		memory = '2.GB'
+		time = '8h'
+		maxRetries = 3
+	}
+    withName: decontaminate {
+        executor = "slurm"
+        errorStrategy = {task.attempt <= 3 ? "retry" : "ignore"}
+        cpus = 8
+        memory = {16.GB * task.attempt}
+        time = '8h'
+        maxRetries = 3
+    }
+    withName: decontaminate_singles {
+        executor = "slurm"
+        errorStrategy = {task.attempt <= 3 ? "retry" : "ignore"}
+        cpus = 8
+        memory = {16.GB * task.attempt}
+        time = '8h'
+        maxRetries = 3
+    }
+	withName: align {
+		executor = "slurm"
+		errorStrategy = {task.attempt <= 3 ? "retry" : "ignore"}
+		cpus = 8
+		memory = {16.GB * task.attempt}
+		time = '8h'
+		maxRetries = 3
+	}
+	withName: align_singles {
+		executor = "slurm"
+		errorStrategy = {task.attempt <= 3 ? "retry" : "ignore"}
+		cpus = 8
+		memory = {16.GB * task.attempt}
+		time = '8h'
+		maxRetries = 3
+	}
+	withName: merge_and_sort {
+		executor = "slurm"
+		errorStrategy = {task.attempt <= 3 ? "retry" : "ignore"}
+		cpus = 8
+		memory = {16.GB * task.attempt}
+		time = '8h'
+		maxRetries = 3
+	}
+}
