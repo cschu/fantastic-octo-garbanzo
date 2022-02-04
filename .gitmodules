@@ -1,0 +1,3 @@
+[submodule "nevermore"]
+	path = nevermore
+	url = https://github.com/cschu/nevermore
